@@ -39,16 +39,76 @@ Connect4Board::Connect4Board(const Connect4Board& nBoard) {
 }
 
 vector<int> Connect4Board::legal_moves() {
+	extern int firstCol;
 
-	vector<int> temp;
 
-	for (int rows = 0; rows < COLS; rows++) {
-		if (board[0][rows] == 0) {
-			temp.push_back(rows);
+	if (firstCol == -1) {
+		//std::cout << "not yet legal" << endl;
+		vector<int> temp;
+
+		for (int rows = 0; rows < COLS; rows++) {
+			if (board[0][rows] == 0) {
+				temp.push_back(rows);
+			}
 		}
+		return temp;
 	}
-	return temp;
+	//std::cout << "Beneath not legal" << endl;
+
+	//MAKE FCN HERE FOR IF WE GO FIRST TO BREAK IN FRESH BOARD AND BOARD SIZE IS LARGE, MAKE RANGE BE LIKE FROM MIDDLE TO RIGHTMOST SIDE
+
+	if (ROWS < 5 && COLS < 5) {
+		vector<int> temp;
+
+		for (int rows = 0; rows < COLS; rows++) {
+			if (board[0][rows] == 0) {
+				temp.push_back(rows);
+			}
+		}
+		return temp;
+	}
+	
+	else {
+		//std::cout << "legal RANGE :: " << firstCol << endl;
+		//std::cout << "LEGAL RANGE" << endl;
+		//std::cout << "Parition range: " << firstCol - 5 << " to " << firstCol + 5 << endl;
+		vector<int> temp;
+
+		int startCol = firstCol - 5; // Ensure startCol is not less than 0.
+		int endCol = firstCol + 5; // Ensure endCol does not exceed the board size.
+		if (startCol < 0) {
+			startCol = 0;
+		}
+		int leftover = COLS - 1 - endCol;
+		if (endCol > COLS - 1) {
+			endCol = COLS - 1;
+		}
+
+		//std::cout << "start col: " << startCol << endl;
+		//std::cout << "end col: " << endCol << endl;
+
+		for (int col = startCol; col <= endCol; col++) {
+			if (board[0][col] == 0) {
+				temp.push_back(col);
+			}
+		}
+		return temp;
+	}
+
 }
+
+
+int Connect4Board::getFirstCol() {
+	extern int firstCol;
+	return firstCol;
+}
+void Connect4Board::setFirstCol(int col) {
+	extern int firstCol;
+	firstCol = col;
+}
+
+
+
 
 void Connect4Board::print() {
 
@@ -94,7 +154,7 @@ void Connect4Board::print() {
 		std::cout << endl;
 	}
 	else if (BOARD_PRINTING == 0) {
-
+		//std::cout << this->getFirstCol() << "\n";
 		for (int i = 0; i < ROWS; i++) {
 			for (int j = 0; j < COLS; j++) {
 				if (board[i][j] == 1) {
